@@ -1,0 +1,206 @@
+{
+  "metadata": {
+    "model": "Komatsu PC200-8",
+    "source": "PC200-8_Shop_Manual",
+    "version": "1.1.0"
+  },
+  "sensor_definitions": {
+    "engine_oil_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "high_idle_normal": ">= 0.29",
+        "low_idle_normal": ">= 0.10",
+        "high_idle_error": "< 0.25",
+        "low_idle_error": "< 0.07"
+      },
+      "actions": {
+        "critical_low": "Low oil pressure: Potential pump failure, worn bearings, or low oil level. Check immediately.",
+        "warning_high": "High oil pressure: Potential oil path block or sensor error."
+      }
+    },
+    "engine_oil_temperature": {
+      "unit": "°C",
+      "ranges": {
+        "nominal": [80, 110],
+        "critical": 120
+      },
+      "actions": {
+        "warning_low": "Sensor error: Reading below operational minimum.",
+        "critical_high": "Overheating risk: Danger of engine seizure; monitor for engine oil pressure increase."
+      }
+    },
+    "engine_coolant_temp": {
+      "unit": "°C",
+      "ranges": {
+        "normal": [80, 110],
+        "low_error": [50, 80],
+        "warning": 102,
+        "critical": 105
+      },
+      "actions": {
+        "warning_low": "Sensor error: Inefficient firing temperature detected.",
+        "warning": "Temperature rising: Approaching overheat threshold.",
+        "critical": "Engine overheating: Danger of engine seizure. Check coolant leak or fan failure."
+      }
+    },
+    "boost_intake_pressure": {
+      "unit": "kPa",
+      "ranges": {
+        "standard_max_power": ">= 133",
+        "typical": [133, 150],
+        "error_low": "< 103"
+      },
+      "actions": {
+        "critical_low": "Low boost: Air leak issue or turbocharger block detected.",
+        "warning_high": "High boost: Potential damage to air intake modules."
+      }
+    },
+    "common_rail_fuel_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "operating_range": [25, 150],
+        "voltage_low_error": "< 0.2V",
+        "voltage_high_error": "> 4.6V"
+      },
+      "actions": {
+        "critical_low": "Low pressure: Clogged fuel filter or path leaks detected.",
+        "critical_high": "High pressure: Faulty control valve or pressure relief valve stuck."
+      }
+    },
+    "fuel_supply_low_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "low_idle_nominal": [0.5, 1.3],
+        "error_low": "< 0.5",
+        "error_high": "> 1.3"
+      },
+      "actions": {
+        "critical_low": "Low supply: Feed pump fault, air in fuel line, or clogged fuel filter.",
+        "critical_high": "High supply: Sensor error or block in fuel return line."
+      }
+    },
+    "fuel_return_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "cranking_nominal": [0.3, 1.1],
+        "error": "> 1.1"
+      },
+      "actions": {
+        "critical": "Return restriction: Check for blockages in the return line."
+      }
+    },
+    "fuel_suction_vacuum": {
+      "unit": "kPa",
+      "ranges": {
+        "max_negative": -50.7,
+        "clogged_threshold": "< -50.7"
+      },
+      "actions": {
+        "warning": "Suction restriction: Fuel filter likely clogged."
+      }
+    },
+    "hydraulic_oil_temperature": {
+      "unit": "°C",
+      "ranges": {
+        "normal": [40,60],
+        "warning": [60, 90],
+        "critical": 95
+      },
+      "actions": {
+        "warning_low": "Sensor error detected.",
+        "critical_high": "System overheating: Check for pathline blocks, pump issues, or damaged components."
+      }
+    },
+    "hydraulic_control_unload_prs": {
+      "unit": "MPa",
+      "ranges": {
+        "nominal": [2.5, 4.5],
+        "error": "< 2.5"
+      },
+      "actions": {
+        "critical": "Pilot circuit/Pump issue: Pressure below required unload threshold."
+      }
+    },
+    "boom_relief_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "standard": [33.3, 36.3],
+        "power_max": [35.8, 38.8],
+        "error_low": "< 33.0",
+        "error_high": "> 39.7"
+      },
+      "actions": {
+        "critical_low": "Low pressure: Hydraulic leak or pump failure.",
+        "critical_high": "High pressure: Relief valve malfunction or discharge block."
+      }
+    },
+    "arm_bucket_relief_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "standard": 34.8,
+        "power_max": 37.3,
+        "error_low": "< 33.0",
+        "error_high": "> 39.7"
+      },
+      "actions": {
+        "critical_low": "Low pressure: Hydraulic leak or hose damage.",
+        "critical_high": "High pressure: Relief valve malfunction, blocked hydraulic line, or control valve issue."
+      }
+    },
+    "swing_relief_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "nominal": [28.8, 31.8],
+        "error_low": "< 28.0",
+        "error_high": "> 32.0"
+      },
+      "actions": {
+        "critical_low": "Low pressure: Pump weakness, hydraulic leak, or swing motor malfunction.",
+        "critical_high": "High pressure: Blocked return line, relief valve malfunction, or stuck control spool."
+      }
+    },
+    "travel_relief_pressure": {
+      "unit": "MPa",
+      "ranges": {
+        "nominal": [36.7, 39.7],
+        "error_low": "< 36.8",
+        "error_high": "> 40.2"
+      },
+      "actions": {
+        "critical_low": "Low pressure: Hydraulic oil leak or travel motor malfunction.",
+        "critical_high": "High pressure: Blocked return line, relief valve fault, or overloaded tracks."
+      }
+    },
+    "ambient_air_pressure": {
+      "unit": "kPa",
+      "ranges": {
+        "sea_level_typical": 100,
+        "error": "< 90"
+      },
+      "actions": {
+        "warning": "Sensor/Calibration error: Electrical fault or high-altitude mismatch."
+      }
+    },
+    "fuel_level": {
+      "unit": "L",
+      "ranges": {
+        "full": 70,
+        "low_warning": 20
+      },
+      "actions": {
+        "warning": "Fuel low: Refill required to prevent air intake."
+      }
+    },
+    "engine_oil_level": {
+      "unit": "L",
+      "ranges": {
+        "low": "45",
+        "high_error": "65"
+      },
+      "actions": {
+        "critical_low": "Low oil level: Check for leakages immediately.",
+        "warning_high": "Sensor error or engine fault detected."
+      }
+    }
+  }
+}
