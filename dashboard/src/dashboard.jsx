@@ -156,7 +156,7 @@ const Dashboard = ({ onNavigate = () => { } }) => {
         <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} />
         <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={false} onNavigate={onNavigate} />
         <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
-          <SidebarItem icon="📊" label="Report" targetView="report" isActive={false} />
+          <SidebarItem icon="📋" label="Report" targetView="report" isActive={false} />
         </div>
       </nav>
 

@@ -297,7 +297,7 @@ const Analyze = ({ onNavigate }) => {
                 <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={true} onNavigate={onNavigate} />
                 <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
-                    <SidebarItem icon="📊" label="Report" targetView="report" isActive={false} />
+                   <SidebarItem icon="📋" label="Report" targetView="report" isActive={false} onNavigate={onNavigate} />
                 </div>
             </nav>
 

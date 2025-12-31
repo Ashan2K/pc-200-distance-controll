@@ -6,7 +6,7 @@ const ReportPage = ({ onNavigate = () => { } }) => {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const SERVER_IP = '10.161.10.201'; // Use your Node Server IP
+  
     const API_BASE = `http://localhost:3000/api`;
 
     useEffect(() => {
@@ -81,10 +81,14 @@ const ReportPage = ({ onNavigate = () => { } }) => {
             
             {/* Sidebar (Reused) */}
             <nav style={{ width: '80px', background: 'rgba(26, 26, 26, 0.95)', borderRight: '1px solid rgba(255,255,255,0.12)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '30px', zIndex: 20 }}>
-                <SidebarItem icon="📊" label="Dashboard" targetView="dashboard" />
-                <SidebarItem icon="🧭" label="Sensors" targetView="sensors" />
-                <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" />
-                <SidebarItem icon="📋" label="Report" targetView="report" isActive={true} />
+                <SidebarItem icon="📊" label="Dashboard" targetView="dashboard" isActive={false} onNavigate={onNavigate} />
+                <SidebarItem icon="🧭" label="Sensors" targetView="sensors" isActive={false} onNavigate={onNavigate} />
+                <SidebarItem icon="🕹️" label="Simulation" targetView="simulation" isActive={false} onNavigate={onNavigate} />
+                <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} onNavigate={onNavigate} />
+                <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={false} onNavigate={onNavigate} />
+                <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
+                    <SidebarItem icon="📋" label="Report" targetView="report" isActive={true} />
+                </div>
             </nav>
 
             {/* Main Content */}
