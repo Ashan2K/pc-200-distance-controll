@@ -6,7 +6,33 @@ import axios from 'axios';
  * ESP32 used: (voltage - 0.5) * Multiplier.
  */
 
-const sessionLogs = new Set();
+const recordedErrors = new Set();
+
+
+const sendError = async (errorObj, liveData) => {
+  const code = errorObj.code;
+
+  if (recordedErrors.has(code)) return;
+
+  recordedErrors.add(code);
+
+  await axios.post('http://localhost:3000/api/log-error', {
+    errorDetail: errorObj,
+    fullSnapshot: liveData
+  });
+};
+
+const resolveError = async (code, liveData) => {
+  if (!recordedErrors.has(code)) return;
+
+  recordedErrors.delete(code);
+
+  await axios.post('http://localhost:3000/api/resolve-error', {
+    errorCode: code,
+    fullSnapshot: liveData
+  });
+};
+
 
 
 
@@ -31,40 +57,23 @@ export const analyzeMachineHealth = async (liveData) => {
     console.log("Analyzing machine health with data:", liveData);
     const status = { errors: [], predictions: [] };
     if (liveData.cam_sen == 0 && liveData.crank_sen == 0) {
-        sessionLogs.clear();
+       
         return status;
     }
 
     const sensor = kb.sensor_definitions;
-
-    const sendToNode = async (sensorKey, physicalVal, errorObj) => {
-        const logKey = `${errorObj.code}_${sensorKey}`;
-        if (sessionLogs.has(logKey)) return; // Don't log twice
-
-        sessionLogs.add(logKey);
-        try {
-            await axios.post('http://localhost:3000/api/log-error', {
-                errorDetail: {
-                    code: errorObj.code,
-                    msg: errorObj.msg,
-                    sensor: sensorKey,
-                    value: physicalVal
-                },
-                fullSnapshot: liveData // Save all 28 sensors
-            });
-        } catch (err) {
-            console.error("Failed to reach Node server", err);
-        }
-    };
 
     // --- 1. ENGINE GROUP ---
     // Eng Water Temp (Mux1 Ch1)
     const engWtrTemp = getPhysicalValue(liveData.eng_wtr_temp, 'temp', 120);
     console.log("Engine Water Temp:", engWtrTemp);
     if (engWtrTemp >= sensor.engine_coolant_temp.ranges.critical) {
-        const err = { code: "E03", msg: sensor.engine_coolant_temp.actions.critical };
+        const err = { code: "E03", msg: sensor.engine_coolant_temp.actions.critical ,sensor: 'eng_wtr_temp'};
+        await sendError(err, liveData);
         status.errors.push({ code: "E03", msg: sensor.engine_coolant_temp.actions.critical });
-        //await sendToNode("eng_wtr_temp", engWtrTemp, err, liveData);
+        
+    }else {
+        await resolveError("E03", liveData);
     }
     if (engWtrTemp <= sensor.engine_coolant_temp.ranges.low_error[0]) {
         status.errors.push({ code: "E02", msg: sensor.engine_coolant_temp.actions.warning_low });

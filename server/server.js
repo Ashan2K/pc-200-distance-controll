@@ -148,23 +148,103 @@ app.post('/api/predict', async (req, res) => {
 app.post('/api/log-error', async (req, res) => {
   try {
     const { errorDetail, fullSnapshot } = req.body;
+    console.log("Logging error:", errorDetail);
+    const errorRef = db.collection('active_errors').doc(errorDetail.code);
+    const doc = await errorRef.get();
 
-    const docRef = await db.collection('machine_logs').add({
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      errorCode: errorDetail.code,
-      message: errorDetail.msg,
-      triggerSensor: errorDetail.sensor,
-      triggerValue: errorDetail.value,
-      allSensors: fullSnapshot, // Entire 28-sensor object
-      gps: fullSnapshot.gps || { status: "NO FIX" }
-    });
+    if (!doc.exists) {
+      // 🟢 FIRST TIME ERROR
+      await errorRef.set({
+        code: errorDetail.code,
+        message: errorDetail.msg,
+        sensor: errorDetail.sensor,
+        startedAt: admin.firestore.FieldValue.serverTimestamp(),
+        lastSeenAt: admin.firestore.FieldValue.serverTimestamp(),
+        snapshot: fullSnapshot,
+      });
+    } else {
+      // 🟡 ERROR STILL ACTIVE → update heartbeat only
+      await errorRef.update({
+        lastSeenAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
 
-    res.status(200).send({ success: true, logId: docRef.id });
-  } catch (error) {
-    console.error("Firebase Store Error:", error);
+    }
+
+    res.send({ success: true });
+  } catch (err) {
+    console.error(err);
     res.status(500).send({ success: false });
   }
 });
+
+app.post('/api/resolve-error', async (req, res) => {
+  try {
+    const { errorCode, fullSnapshot } = req.body;
+    const errorRef = db.collection('active_errors').doc(errorCode);
+    const doc = await errorRef.get();
+
+    if (!doc.exists) return res.send({ success: true });
+
+    const data = doc.data();
+
+    await db.collection('error_history').add({
+      code: data.code,
+      message: data.message,
+      sensor: data.sensor,
+      startedAt: data.startedAt,
+      endedAt: admin.firestore.FieldValue.serverTimestamp(),
+      durationSec:
+        (Date.now() - data.startedAt.toMillis()) / 1000,
+      firstSnapshot: data.snapshot,
+      lastSnapshot: fullSnapshot,
+    });
+
+    await errorRef.delete();
+
+    res.send({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ success: false });
+  }
+});
+
+
+app.get('/api/error-history', async (req, res) => {
+  try {
+    const snap = await db
+      .collection('error_history')
+      .orderBy('startedAt', 'desc')
+      .limit(200)
+      .get();
+
+    const data = snap.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      startedAt: d.data().startedAt?.toDate(),
+      resolvedAt: d.data().resolvedAt?.toDate(),
+    }));
+
+    res.send(data);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send([]);
+  }
+});
+app.get('/api/active-errors', async (req, res) => {
+  try {
+    const snap = await db.collection('active_errors').get();
+    const data = snap.docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+      startedAt: d.data().startedAt?.toDate(),
+      lastSeenAt: d.data().lastSeenAt?.toDate(),
+    }));
+    res.send(data);
+  } catch (e) {
+    res.status(500).send([]);
+  }
+});
+
 
 // Start Express on a separate port (e.g., 3000)
 const HTTP_PORT = 3000;

@@ -15,12 +15,28 @@ const Dashboard = ({ onNavigate = () => { } }) => {
   const mapRef = useRef(null);
   const [dashboardErrors, setDashboardErrors] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
+  const runDiagnostics = async () => {
     if (controls) {
-      const { errors } = analyzeMachineHealth(controls); // Extract only errors
-      setDashboardErrors(errors);
+      try {
+        // Await the async diagnostic result
+        const result = await analyzeMachineHealth(controls);
+        
+        // Ensure result and result.errors are defined before updating state
+        if (result && result.errors) {
+          setDashboardErrors(result.errors);
+        } else {
+          setDashboardErrors([]);
+        }
+      } catch (err) {
+        console.error("Diagnostic analysis failed:", err);
+        setDashboardErrors([]);
+      }
     }
-  }, [controls]);
+  };
+
+  runDiagnostics();
+}, [controls]);
 
 
 

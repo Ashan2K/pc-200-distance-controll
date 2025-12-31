@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GaugeComponent } from 'react-gauge-component';
 import useWebSocket from './useWebSocket';
 import { analyzeMachineHealth } from './diagnosisEngine';
@@ -240,7 +240,31 @@ const MeterBoard = ({ onNavigate }) => {
 
     // Engine Running Logic
     const isEngineRunning = komatsuData.crank_sen === 1 || komatsuData.cam_sen === 1;
-    const health = useMemo(() => analyzeMachineHealth(komatsuData), [komatsuData]);
+    // Replace the useMemo line with these:
+    const [health, setHealth] = useState({ errors: [], predictions: [] });
+
+    useEffect(() => {
+        const runAnalysis = async () => {
+            if (isConnected && isEngineRunning) {
+                try {
+                    const result = await analyzeMachineHealth(komatsuData);
+                    // Ensure result is not null and has the expected arrays
+                    if (result) {
+                        setHealth({
+                            errors: result.errors || [],
+                            predictions: result.predictions || []
+                        });
+                    }
+                } catch (err) {
+                    console.error("Diagnostic engine error:", err);
+                }
+            } else {
+                // Clear errors if engine is off or disconnected
+                setHealth({ errors: [], predictions: [] });
+            }
+        };
+        runAnalysis();
+    }, [komatsuData, isConnected, isEngineRunning]);
 
 
     // Use the provided sensor data structure to generate meters

@@ -6,6 +6,7 @@ import JcbArmSimulator from './jcb_swign.jsx';
 import Maintenance from './Maintenance.jsx';
 import Analyze from './Analyze.jsx';
 import './App.css';
+import ReportPage from './assets/report.jsx';
 
 function App() {
   const [currentView, setCurrentView] = useState('login');
@@ -33,6 +34,7 @@ function App() {
       {currentView === 'simulation' && <JcbArmSimulator onNavigate={handleNavigate} />}
       {currentView === 'maintenance' && <Maintenance onNavigate={handleNavigate}/>}
       {currentView === 'analyze' && <Analyze onNavigate={handleNavigate} />}
+      {currentView === 'report' && <ReportPage onNavigate={handleNavigate} />}
 
 
 
