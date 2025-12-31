@@ -6,14 +6,15 @@ import './LoginPage.css';
 // --- Firebase Configuration ---
 // Get this from your Firebase Console: Project Settings > General
 const firebaseConfig = {
-  apiKey: "AIzaSyDRxooW6jm0Trn7GHY4tiMZQalAulxUVlI",
-  authDomain: "komatsu-e213e.firebaseapp.com",
-  projectId: "komatsu-e213e",
-  storageBucket: "komatsu-e213e.firebasestorage.app",
-  messagingSenderId: "452478107002",
-  appId: "1:452478107002:web:a691189ba46682f1d9aac3",
-  measurementId: "G-4V9BY5Z2JF"
+  apiKey: "AIzaSyB1T7ORVZwScGgLtmoOxo2FEJS1J5SgCK8",
+  authDomain: "pc-200.firebaseapp.com",
+  projectId: "pc-200",
+  storageBucket: "pc-200.firebasestorage.app",
+  messagingSenderId: "468759896",
+  appId: "1:468759896:web:e5ff4d05e9baf79972e12d",
+  measurementId: "G-QRY69PPREK"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);

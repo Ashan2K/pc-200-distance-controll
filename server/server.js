@@ -276,7 +276,7 @@ const wss2 = new WebSocket.Server({ port: PORT_2 });
 console.log(`WebSocket server 2: ws://localhost:${PORT_2}`);
 
 let lastSaveTime = 0;
-const SAVE_INTERVAL = 1000000; // Log to database every 10 seconds
+const SAVE_INTERVAL = 100000000; // Log to database every 10 seconds
 
 wss2.on('connection', ws => {
   console.log(`Client connected to Server 2`);
