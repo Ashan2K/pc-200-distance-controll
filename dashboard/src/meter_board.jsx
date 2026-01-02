@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { GaugeComponent } from 'react-gauge-component';
 import useWebSocket from './useWebSocket';
 import { analyzeMachineHealth } from './diagnosisEngine';
+import baseUrl from './baseUrl';
 
 // --- CONFIGURATION ---
-const SERVER_IP = '10.161.10.201';
+const SERVER_IP = baseUrl;
 const PORT_KOMATSU = 8081;
 const KOMATSU_WS_URL = `ws://${SERVER_IP}:${PORT_KOMATSU}`;
 
@@ -347,11 +348,12 @@ const MeterBoard = ({ onNavigate }) => {
 
 
                 {/* Navigation Items */}
-                <SidebarItem icon="📊" label="Dashboard" targetView="dashboard" isActive={false} onNavigate={onNavigate} />
+                
                 <SidebarItem icon="🧭" label="Sensors" targetView="sensors" isActive={true} onNavigate={onNavigate} />
                 <SidebarItem icon="🕹️" label="Simulation" targetView="simulation" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={false} onNavigate={onNavigate} />
+                <SidebarItem icon="📊" label="Utility" targetView="utility" isActive={false} onNavigate={onNavigate} />
                 <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
                     <SidebarItem icon="📋" label="Report" targetView="report" isActive={false} onNavigate={onNavigate} />
                 </div>

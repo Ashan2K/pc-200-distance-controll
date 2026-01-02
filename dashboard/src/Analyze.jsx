@@ -292,11 +292,13 @@ const Analyze = ({ onNavigate }) => {
                 paddingTop: '30px',
                 flexShrink: 0
             }}>
-                <SidebarItem icon="📊" label="Dashboard" targetView="dashboard" isActive={false} onNavigate={onNavigate} />
+                
+                
                 <SidebarItem icon="🧭" label="Sensors" targetView="sensors" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🕹️" label="Simulation" targetView="simulation" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={true} onNavigate={onNavigate} />
+                <SidebarItem icon="📊" label="Utility" targetView="utility" isActive={false} onNavigate={onNavigate} />
                 <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
                    <SidebarItem icon="📋" label="Report" targetView="report" isActive={false} onNavigate={onNavigate} />
                 </div>

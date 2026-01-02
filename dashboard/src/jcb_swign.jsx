@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { useFrame, Canvas } from '@react-three/fiber';
 import { useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import baseUrl from './baseUrl.js';
 
 // NOTE: Use the correct file name for your GLB
 import modelUrl from './assets/Excavator_3D_Model.glb?url';
@@ -119,7 +120,7 @@ const SidebarItem = ({ icon, label, targetView, isActive = false, onNavigate }) 
 );
 
 export function JcbArmSimulator({ onNavigate }) {
-    const controls = useWebSocket('ws://10.161.10.201:8080');
+    const controls = useWebSocket(`ws://${baseUrl}:8080`);
     const groupRef = useRef();
 
     const { scene, nodes } = useGLTF(modelUrl);
@@ -170,11 +171,11 @@ export function JcbArmSimulator({ onNavigate }) {
 
 
                 {/* Navigation Items */}
-                <SidebarItem icon="📊" label="Dashboard" targetView="dashboard" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🧭" label="Sensors" targetView="sensors" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🕹️" label="Simulation" targetView="simulation" isActive={true} onNavigate={onNavigate} />
                 <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} onNavigate={onNavigate} />
                 <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={false} onNavigate={onNavigate} />
+                <SidebarItem icon="📊" label="Utility" targetView="utility" isActive={false} onNavigate={onNavigate} />
         <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
           <SidebarItem icon="📋" label="Report" targetView="report" isActive={false} onNavigate={onNavigate}/>
         </div>

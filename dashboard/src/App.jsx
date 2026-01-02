@@ -14,7 +14,7 @@ function App() {
 
   const handleLogin = (username) => {
     setUser(username);
-    setCurrentView('dashboard');
+    setCurrentView('sensors');
   };
 
   const handleNavigate = (view) => {
@@ -29,7 +29,7 @@ function App() {
   return (
     <div className="App">
       {currentView === 'login' && <LoginPage onLogin={handleLogin} />}
-      {currentView === 'dashboard' && <Dashboard onNavigate={handleNavigate} onLogout={handleLogout} />}
+      {currentView === 'utility' && <Dashboard onNavigate={handleNavigate} onLogout={handleLogout} />}
       {currentView === 'sensors' && <MeterBoard onNavigate={handleNavigate} />}
       {currentView === 'simulation' && <JcbArmSimulator onNavigate={handleNavigate} />}
       {currentView === 'maintenance' && <Maintenance onNavigate={handleNavigate}/>}

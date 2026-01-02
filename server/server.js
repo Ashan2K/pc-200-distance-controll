@@ -21,6 +21,22 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+let engineStartTime = null;
+let totalRuntimeToday = 0; // in milliseconds
+let lastFuelLevel = 100;    // percentage or liters
+
+// Function to save daily stats
+const updateDailyStats = async (runtimeMs, fuelConsumed) => {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const dailyRef = db.collection("daily_analytics").doc(today);
+
+  await dailyRef.set({
+    totalRuntimeSeconds: admin.firestore.FieldValue.increment(runtimeMs / 1000),
+    fuelConsumed: admin.firestore.FieldValue.increment(fuelConsumed),
+    lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+};
+
 const addRecord = async (record) => {
   const docRef = await db.collection("maintenance_records").add({
     ...record,
@@ -42,13 +58,13 @@ app.post('/api/login', async (req, res) => {
   const { idToken } = req.body;
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    
+
     // Log this to your terminal to see what is actually inside decodedToken
     console.log("Verified User:", decodedToken);
 
     // Make sure you send back an object that has a 'user' property
-    res.status(200).json({ 
-      status: 'success', 
+    res.status(200).json({
+      status: 'success',
       user: decodedToken // This contains email, uid, etc.
     });
   } catch (error) {
@@ -87,8 +103,8 @@ app.get('/api/sensorData', async (req, res) => {
     const endTime = new Date();
     let startTime = new Date();
 
-    if(period === '24h') startTime.setHours(endTime.getHours() - 24);
-    else if(period === '7d') startTime.setDate(endTime.getDate() - 7);
+    if (period === '24h') startTime.setHours(endTime.getHours() - 24);
+    else if (period === '7d') startTime.setDate(endTime.getDate() - 7);
     else startTime.setHours(endTime.getHours() - 1); // default 1 hour
 
     const snapshot = await db.collection("machine_logs")
@@ -129,7 +145,7 @@ app.post('/api/predict', async (req, res) => {
     const response = await fetch(flaskURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ values :values})
+      body: JSON.stringify({ values: values })
     });
     if (!response.ok) {
       const text = await response.text();
@@ -283,7 +299,36 @@ wss2.on('connection', ws => {
   ws.on('message', async (message) => {
     try {
       const data = JSON.parse(message);
-      
+      const { crank_sen, cam_sen, fuel_lvl } = data;
+
+      // 1. Calculate Engine State & Runtime
+      const isRunning = cam_sen === 1 && crank_sen === 1;
+
+      if (isRunning) {
+        if (!engineStartTime) {
+          engineStartTime = Date.now(); // Engine just started
+        } else {
+          // Engine is continuing to run
+          const currentDuration = Date.now() - engineStartTime;
+
+          // Calculate fuel drop (assuming fuel_level is in data)
+          let fuelDiff = 0;
+          if (fuel_lvl < lastFuelLevel) {
+            fuelDiff = lastFuelLevel - fuel_lvl;
+            lastFuelLevel = fuel_lvl;
+          }
+
+          // Update every 10 seconds or every SAVE_INTERVAL
+          if (Date.now() - lastSaveTime > SAVE_INTERVAL) {
+            await updateDailyStats(currentDuration, fuelDiff);
+            // Reset start time for next increment
+            engineStartTime = Date.now();
+          }
+        }
+      } else {
+        engineStartTime = null; // Engine stopped
+      }
+
       // 1. Immediate Broadcast for Real-time Gauges
       wss2.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) client.send(message);

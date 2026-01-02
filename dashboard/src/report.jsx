@@ -110,11 +110,11 @@ const ReportPage = ({ onNavigate = () => { } }) => {
     return (
         <div style={{ height: '100vh', width: '100vw', backgroundColor: '#0A0A0A', color: '#fff', display: 'flex', overflow: 'hidden' }}>
             <nav style={{ width: '80px', background: 'rgba(26, 26, 26, 0.95)', borderRight: '1px solid rgba(255,255,255,0.12)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '30px', zIndex: 20 }}>
-                <SidebarItem icon="📊" label="Dashboard" targetView="dashboard" isActive={true} />
                 <SidebarItem icon="🧭" label="Sensors" targetView="sensors" isActive={false} />
                 <SidebarItem icon="🕹️" label="Simulation" targetView="simulation" isActive={false} />
                 <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} />
                 <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={false} onNavigate={onNavigate} />
+                <SidebarItem icon="📊" label="Utility" targetView="utility" isActive={false} onNavigate={onNavigate} />
                 <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
                     <SidebarItem icon="📋" label="Report" targetView="report" isActive={true} />
                 </div>

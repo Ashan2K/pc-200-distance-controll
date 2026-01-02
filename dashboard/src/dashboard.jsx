@@ -2,10 +2,11 @@
 import { React, useEffect, useState, useRef } from 'react';
 import useWebSocket from './useWebSocket';
 import { analyzeMachineHealth } from './diagnosisEngine';
+import baseUrl from './baseUrl.js';
 
 const Dashboard = ({ onNavigate = () => { } }) => {
   // WebSocket for live data
-  const SERVER_IP = '10.161.10.201';
+  const SERVER_IP = baseUrl;
   const PORT_KOMATSU = 8081;
   const controls = useWebSocket(`ws://${SERVER_IP}:${PORT_KOMATSU}`);
   const gps = controls?.gps;
@@ -150,11 +151,11 @@ const Dashboard = ({ onNavigate = () => { } }) => {
         position: 'relative',
         flexShrink: 0
       }}>
-        <SidebarItem icon="📊" label="Dashboard" targetView="dashboard" isActive={true} />
         <SidebarItem icon="🧭" label="Sensors" targetView="sensors" isActive={false} />
         <SidebarItem icon="🕹️" label="Simulation" targetView="simulation" isActive={false} />
         <SidebarItem icon="🔧" label="Maintenance" targetView="maintenance" isActive={false} />
         <SidebarItem icon="🔬" label="Analyze" targetView="analyze" isActive={false} onNavigate={onNavigate} />
+        <SidebarItem icon="📊" label="Utility" targetView="utility" isActive={false} onNavigate={onNavigate} />
         <div style={{ marginTop: 'auto', marginBottom: '20px' }}>
           <SidebarItem icon="📋" label="Report" targetView="report" isActive={false} />
         </div>
